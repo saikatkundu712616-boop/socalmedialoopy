@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static post_extras %}
+{% block title %}Post by {{ post.author.username }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/feed.css' %}">
+{% endblock %}
+
+{% block content %}
+
+{% if confirm_delete %}
+    <div class="auth-card">
+        <h2>Delete this post?</h2>
+        <p class="muted">This cannot be undone.</p>
+        <form method="POST" action="{% url 'posts:delete_post' post.id %}" class="form-actions">
+            {% csrf_token %}
+            <button type="submit" class="btn-danger">Yes, delete</button>
+            <a href="{% url 'posts:post_detail' post.id %}" class="btn-secondary">Cancel</a>
+        </form>
+    </div>
+{% else %}
+
+    {% include 'posts/post_card.html' with post=post %}
+
+    <!-- All comments below the card (extra list) -->
+    {% if post.comments_count > 0 %}
+        <div class="post-card detail" style="margin-top: -20px; border-top: none; border-radius: 0 0 12px 12px;">
+            <h3 style="padding: 12px 16px 0; font-size: 0.95rem; color: var(--text-soft); font-weight: 600;">
+                All comments
+            </h3>
+            <ul class="comments-list full">
+                {% for c in post.comments.all %}
+                    <li data-comment-id="{{ c.id }}">
+                        <img src="{{ c.author.profile.avatar.url }}" class="avatar-xs" alt="">
+                        <div>
+                            <strong>{{ c.author.username }}</strong>
+                            <span>{{ c.content }}</span>
+                            <small>{{ c.created_at|date:"M d, Y H:i" }}</small>
+                        </div>
+                        {% if c.author == user or post.author == user %}
+                            <button class="delete-comment"
+                                    data-url="{% url 'posts:delete_comment' c.id %}">×</button>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/like.js' %}"></script>
+<script src="{% static 'js/comments.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% load static post_extras %}
+<article class="post-card" data-post-id="{{ post.id }}">
+
+    <!-- ── HEADER ── -->
+    <header class="post-header">
+        <a href="{% url 'accounts:profile' post.author.username %}" class="post-author">
+            <img src="{{ post.author.profile.avatar.url }}"
+                 class="post-avatar" alt="{{ post.author.username }}">
+            <div class="post-author-meta">
+                <strong>{{ post.author.username }}</strong>
+                <span class="post-time">{{ post.created_at|date:"M d, Y" }} · {{ post.created_at|time:"H:i" }}</span>
+            </div>
+        </a>
+
+        {% if post.author == user %}
+            <div class="post-menu">
+                <a href="{% url 'posts:edit_post' post.id %}" title="Edit">Edit</a>
+                <a href="{% url 'posts:delete_post' post.id %}"
+                   onclick="return confirm('Delete this post?');" title="Delete">Delete</a>
+            </div>
+        {% endif %}
+    </header>
+
+    <!-- ── CAPTION ── -->
+    {% if post.content %}
+        <p class="post-content">{{ post.content }}</p>
+    {% endif %}
+
+    <!-- ── IMAGE ── -->
+    {% if post.image %}
+        <div class="post-image-wrap">
+            <a href="{% url 'posts:post_detail' post.id %}">
+                <img src="{{ post.image.url }}" class="post-img" alt="post image">
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- ── ACTION BAR ── -->
+    <div class="post-actions">
+        <button type="button"
+                class="icon-btn like-btn {% if post.id|in_set:liked_post_ids %}liked{% endif %}"
+                data-url="{% url 'posts:toggle_like' post.id %}"
+                aria-label="Like">
+            <svg class="icon-heart" viewBox="0 0 24 24" width="24" height="24">
+                <path d="M12 21s-7.5-4.9-9.6-9.2C.7 8.3 2.5 4.5 6 4.5c2 0 3.4 1 4.4 2.5h3.2C14.6 5.5 16 4.5 18 4.5c3.5 0 5.3 3.8 3.6 7.3C19.5 16.1 12 21 12 21z"
+                      fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+
+        <a href="{% url 'posts:post_detail' post.id %}" class="icon-btn" aria-label="Comment">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+                <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.9 9.9 0 0 1-3.7-.7L3 21l1.8-4.6A8.3 8.3 0 0 1 3.6 11.5 8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"
+                      fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+
+        <button type="button" class="icon-btn share-btn" aria-label="Share">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+                <path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"
+                      fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- ── LIKE COUNT ── -->
+    <div class="post-likes">
+        <strong class="likes-count">{{ post.likes_count }}</strong>
+        <span>{% if post.likes_count == 1 %}like{% else %}likes{% endif %}</span>
+    </div>
+
+    <!-- ── COMMENTS ── -->
+    <ul class="comments-list">
+        {% for c in post.comments.all|slice:":3" %}
+            <li>
+                <a href="{% url 'accounts:profile' c.author.username %}" class="comment-author">
+                    {{ c.author.username }}
+                </a>
+                <span class="comment-text">{{ c.content }}</span>
+            </li>
+        {% empty %}
+            <li class="no-comments">No comments yet. Be the first!</li>
+        {% endfor %}
+    </ul>
+
+    {% if post.comments_count > 3 %}
+        <a href="{% url 'posts:post_detail' post.id %}" class="view-all-comments">
+            View all {{ post.comments_count }} comments
+        </a>
+    {% endif %}
+
+    <!-- ── COMMENT FORM ── -->
+    <form class="comment-form" data-url="{% url 'posts:add_comment' post.id %}">
+        {% csrf_token %}
+        <input type="text" name="content" maxlength="500"
+               placeholder="Add a comment..." required autocomplete="off">
+        <button type="submit">Post</button>
+    </form>
+
+</article>

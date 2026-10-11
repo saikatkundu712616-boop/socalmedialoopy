@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Search{% endblock %}
+
+{% block content %}
+<h2>Search</h2>
+
+<form method="GET" action="{% url 'core:search' %}" style="margin-bottom:24px;">
+    <input type="text" name="q" value="{{ q }}"
+           placeholder="Search users or posts..."
+           style="padding:10px 14px; border:1px solid #ccc; border-radius:22px;
+                  width:100%; max-width:420px; font-size:0.95rem;">
+</form>
+
+{% if q %}
+
+    <h3>Users ({{ users|length }})</h3>
+    <ul class="user-list">
+        {% for u in users %}
+            <li>
+                <a href="{% url 'accounts:profile' u.username %}" class="user-row">
+                    <img src="{{ u.profile.avatar.url }}" class="avatar-sm" alt="">
+                    <span>{{ u.username }}</span>
+                </a>
+            </li>
+        {% empty %}
+            <li class="muted">No users found.</li>
+        {% endfor %}
+    </ul>
+
+    <h3 style="margin-top:32px;">Posts ({{ posts|length }})</h3>
+    {% for post in posts %}
+        {% include 'partials/post_card.html' with post=post %}
+    {% empty %}
+        <p class="muted">No posts found.</p>
+    {% endfor %}
+
+{% else %}
+    <p class="muted">Type something to search.</p>
+{% endif %}
+{% endblock %}

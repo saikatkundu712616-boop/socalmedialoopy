@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Discover People · Looply{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<style>
+    .discover-header {
+        max-width: 720px;
+        margin: 0 auto 24px;
+        padding: 0 4px;
+    }
+    .discover-header h2 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        letter-spacing: -0.4px;
+        margin-bottom: 4px;
+    }
+    .discover-header p {
+        color: var(--text-soft);
+        font-size: 0.92rem;
+    }
+
+    .user-list {
+        max-width: 720px;
+        margin: 0 auto;
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .user-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 20px;
+        background: var(--surface);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow .15s;
+    }
+    .user-card:hover { box-shadow: var(--shadow); }
+
+    .user-card .avatar-md {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+        box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--border);
+    }
+
+    .user-info {
+        flex: 1;
+        min-width: 0;
+    }
+    .user-info .username {
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--text);
+        text-decoration: none;
+        display: block;
+    }
+    .user-info .username:hover { color: var(--primary); }
+    .user-info .fullname {
+        font-size: 0.85rem;
+        color: var(--text-soft);
+        margin-top: 2px;
+    }
+    .user-info .bio {
+        font-size: 0.85rem;
+        color: var(--text-soft);
+        margin-top: 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .user-action {
+        flex-shrink: 0;
+    }
+    .follow-btn {
+        min-width: 110px;
+    }
+    .follow-btn.following {
+        background: var(--surface-2);
+        color: var(--text);
+        box-shadow: none;
+    }
+    .follow-btn.following:hover {
+        background: #fdecef;
+        color: var(--danger);
+        transform: none;
+        box-shadow: none;
+    }
+
+    .empty-discover {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-soft);
+    }
+    .empty-discover .icon {
+        font-size: 3rem;
+        margin-bottom: 12px;
+        opacity: 0.5;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="discover-header">
+    <h2>Discover People</h2>
+    <p>{{ users_count }} user{{ users_count|pluralize }} on Looply</p>
+</div>
+
+<ul class="user-list">
+    {% for u in users %}
+        <li class="user-card">
+
+            <a href="{% url 'accounts:profile' u.username %}">
+                <img src="{{ u.profile.avatar.url }}"
+                     class="avatar-md"
+                     alt="{{ u.username }}">
+            </a>
+
+            <div class="user-info">
+                <a href="{% url 'accounts:profile' u.username %}" class="username">
+                    {{ u.username }}
+                </a>
+                {% if u.get_full_name %}
+                    <div class="fullname">{{ u.get_full_name }}</div>
+                {% endif %}
+                {% if u.profile.bio %}
+                    <div class="bio">{{ u.profile.bio }}</div>
+                {% endif %}
+            </div>
+
+            <div class="user-action">
+                <button type="button"
+                        class="btn-primary btn-sm follow-btn {% if u.id in following_ids %}following{% endif %}"
+                        data-url="{% url 'accounts:follow_toggle' u.username %}">
+                    {% if u.id in following_ids %}Unfollow{% else %}Follow{% endif %}
+                </button>
+            </div>
+
+        </li>
+    {% empty %}
+        <li class="empty-discover">
+            <div class="icon">👤</div>
+            <p>No other users yet. Invite someone!</p>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/follow.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Feed · Looply{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/feed.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="feed-layout">
+
+    <!-- Create box -->
+    <div class="create-box">
+        <form method="POST" action="{% url 'posts:create_post' %}"
+              enctype="multipart/form-data">
+            {% csrf_token %}
+            <textarea name="content" rows="2" maxlength="1000"
+                      placeholder="What's on your mind, {{ user.username }}?"></textarea>
+            <div class="create-actions">
+                <label class="file-label" title="Add photo">
+                    📷 <input type="file" name="image" accept="image/*" hidden>
+                </label>
+                <button type="submit" class="btn-primary btn-sm">Share</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Posts -->
+    {% for post in posts %}
+        {% include 'posts/post_card.html' with post=post %}
+    {% empty %}
+        <div class="empty-feed">
+            <div class="empty-icon">📭</div>
+            <p>Your feed is empty</p>
+            <p class="muted">
+                Follow some people from
+                <a href="{% url 'accounts:discover' %}">Discover</a>
+                or create your first post above.
+            </p>
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/like.js' %}"></script>
+<script src="{% static 'js/comments.js' %}"></script>
+{% endblock %}

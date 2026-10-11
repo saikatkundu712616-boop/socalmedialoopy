@@ -1,0 +1,8 @@
+{% if messages %}
+    {% for m in messages %}
+        <div class="alert alert-{{ m.tags }}" role="alert">
+            {{ m }}
+            <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+        </div>
+    {% endfor %}
+{% endif %}

@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static post_extras %}
+{% block title %}{{ profile_user.username }} · Looply{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="profile-hero">
+
+    <div class="profile-body">
+
+        <div class="profile-avatar-wrap">
+            <img class="profile-avatar"
+                 src="{{ profile_user.profile.avatar.url }}"
+                 alt="{{ profile_user.username }}">
+        </div>
+
+        <div class="profile-main">
+
+            <div class="profile-top">
+                <div class="profile-identity">
+                    <h2 class="profile-username">{{ profile_user.username }}</h2>
+                    {% if profile_user.get_full_name %}
+                        <p class="profile-fullname">{{ profile_user.get_full_name }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="profile-actions">
+                    {% if is_own_profile %}
+                        <a href="{% url 'accounts:edit_profile' %}" class="btn-secondary">
+                            ✏️ Edit Profile
+                        </a>
+                    {% else %}
+                        <button id="follow-btn"
+                                type="button"
+                                class="btn-primary follow-btn {% if is_following %}following{% endif %}"
+                                data-url="{% url 'accounts:follow_toggle' profile_user.username %}">
+                            {% if is_following %}Unfollow{% else %}Follow{% endif %}
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if profile_user.profile.bio %}
+                <p class="profile-bio">{{ profile_user.profile.bio }}</p>
+            {% endif %}
+
+            <div class="profile-meta-row">
+                {% if profile_user.profile.location %}
+                    <span class="profile-meta">📍 {{ profile_user.profile.location }}</span>
+                {% endif %}
+                {% if profile_user.profile.website %}
+                    <span class="profile-meta">
+                        🔗 <a href="{{ profile_user.profile.website }}" target="_blank" rel="noopener">
+                            {{ profile_user.profile.website }}
+                        </a>
+                    </span>
+                {% endif %}
+                <span class="profile-meta">
+                    📅 Joined {{ profile_user.date_joined|date:"M Y" }}
+                </span>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat">
+                    <strong>{{ posts|length }}</strong>
+                    <span>Posts</span>
+                </div>
+                <a href="{% url 'accounts:followers_list' profile_user.username %}" class="stat">
+                    <strong id="followers-count">{{ followers_count }}</strong>
+                    <span>Followers</span>
+                </a>
+                <a href="{% url 'accounts:following_list' profile_user.username %}" class="stat">
+                    <strong>{{ following_count }}</strong>
+                    <span>Following</span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="profile-posts-section">
+
+    <div class="profile-posts-header">
+        <h3>{% if is_own_profile %}My Posts{% else %}Posts{% endif %}</h3>
+        {% if is_own_profile %}
+            <a href="{% url 'posts:create_post' %}" class="btn-primary btn-sm">
+                ✏️ New Post
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="profile-posts-grid">
+        {% for post in posts %}
+            {% include 'posts/post_card.html' with post=post %}
+        {% empty %}
+            <div class="empty-feed">
+                <div class="empty-icon">📭</div>
+                <p>
+                    {% if is_own_profile %}
+                        You haven't posted anything yet.
+                    {% else %}
+                        {{ profile_user.username }} hasn't posted anything yet.
+                    {% endif %}
+                </p>
+                {% if is_own_profile %}
+                    <a href="{% url 'posts:create_post' %}" class="btn-primary btn-sm">
+                        Create your first post
+                    </a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/follow.js' %}"></script>
+<script src="{% static 'js/like.js' %}"></script>
+<script src="{% static 'js/comments.js' %}"></script>
+{% endblock %}

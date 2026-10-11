@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Log in · Looply{% endblock title %}
+
+{% block content %}
+<div class='auth-card'>
+    <h2>Welcome back</h2>
+
+    <form method="POST" novalidate>
+        {% csrf_token %}
+
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+        
+        <label>Username</label>
+        <input type="text" name="username" value="{{ username|default:'' }}" required autofocus autocomplete="username">
+
+        <label>Password</label>
+        <input type="password" name="password" required autocomplete="current-password">
+
+
+        <button type="submit" class="btn-primary">Log in</button>
+    </form>
+
+    <p class="muted">
+        New here?
+        <a href="{% url 'accounts:register' %}">Created an account</a>
+    </p>
+
+</div>
+
+{% endblock content %}

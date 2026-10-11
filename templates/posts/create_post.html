@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}New Post{% endblock %}
+
+{% block content %}
+<div class="auth-card wide">
+    <h2>Create a Post</h2>
+
+    <form method="POST" action="{% url 'posts:create_post' %}"
+          enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label>What's on your mind?</label>
+        <textarea name="content" rows="5" maxlength="1000"
+                  placeholder="Write something..."></textarea>
+
+        <label>Attach an image (optional)</label>
+        <input type="file" name="image" accept="image/*">
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Post</button>
+            <a href="{% url 'posts:feed' %}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

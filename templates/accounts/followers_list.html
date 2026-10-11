@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<ul class="user-list">
+    {% for u in items %}
+        <li>
+            <a href="{% url 'accounts:profile' u.username %}" class="user-row">
+                <img src="{{ u.profile.avatar.url }}" class="avatar-sm" alt="">
+                <span>{{ u.username }}</span>
+            </a>
+        </li>
+    {% empty %}
+        <li class="muted">{{ empty_msg }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

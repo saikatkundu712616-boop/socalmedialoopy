@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="feed-layout">
+    <h2>Notifications</h2>
+
+    <ul class="notif-list">
+        {% for n in notifications %}
+            <li class="notif-item {% if not n.is_read %}unread{% endif %}">
+                <img src="{{ n.actor.profile.avatar.url }}" class="avatar-xs" alt="">
+                <div class="notif-body">
+                    <p>
+                        <a href="{% url 'accounts:profile' n.actor.username %}">
+                            <strong>{{ n.actor.username }}</strong>
+                        </a>
+                        {{ n.get_verb_display }}
+                    </p>
+                    <small>{{ n.created_at|date:"M d, Y H:i" }}</small>
+                </div>
+                {% if n.target_url %}
+                    <a href="{{ n.target_url }}" class="notif-open">Open</a>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li class="muted">No notifications yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<style>
+.notif-list { list-style: none; padding: 0; }
+.notif-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+}
+.notif-item.unread { border-left: 4px solid var(--primary); }
+.notif-body { flex: 1; }
+.notif-body p { margin: 0; }
+.notif-body small { color: var(--muted); }
+.notif-open {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+</style>
+{% endblock %}

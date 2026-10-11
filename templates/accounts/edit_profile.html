@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="auth-card wide">
+    <h2>Edit Profile</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="avatar-preview">
+            <img src="{{ profile.avatar.url }}" alt="avatar">
+        </div>
+
+        <label>Avatar</label>
+        <input type="file" name="avatar" accept="image/*">
+
+        <label>Username</label>
+        <input type="text" name="username" value="{{ request.user.username }}" required>
+
+        <label>Email</label>
+        <input type="email" name="email" value="{{ request.user.email }}">
+
+        <label>First name</label>
+        <input type="text" name="first_name" value="{{ request.user.first_name }}">
+
+        <label>Last name</label>
+        <input type="text" name="last_name" value="{{ request.user.last_name }}">
+
+        <label>Bio</label>
+        <textarea name="bio" maxlength="300" rows="3">{{ profile.bio }}</textarea>
+
+        <label>Website</label>
+        <input type="url" name="website" value="{{ profile.website }}" placeholder="https://...">
+
+        <label>Location</label>
+        <input type="text" name="location" value="{{ profile.location }}">
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Save changes</button>
+            <a href="{% url 'accounts:profile' request.user.username %}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
