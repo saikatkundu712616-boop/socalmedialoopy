@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Edit Post{% endblock %}
+{% block title %}Edit Post · Looply{% endblock %}
 
 {% block content %}
 <div class="auth-card wide">
@@ -25,7 +25,7 @@
         <input type="file" name="image" accept="image/*">
 
         <div class="form-actions">
-            <button type="submit" class="btn-primary">Save</button>
+            <button type="submit" class="btn-primary">Save changes</button>
             <a href="{% url 'posts:post_detail' post.id %}" class="btn-secondary">Cancel</a>
         </div>
     </form>

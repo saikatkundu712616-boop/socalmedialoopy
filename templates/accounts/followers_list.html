@@ -1,19 +1,46 @@
 {% extends 'base.html' %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ title }} · Looply{% endblock %}
 
 {% block content %}
-<h2>{{ title }}</h2>
+
+<div class="page-head">
+    <h2>{{ title }}</h2>
+</div>
 
 <ul class="user-list">
     {% for u in items %}
-        <li>
-            <a href="{% url 'accounts:profile' u.username %}" class="user-row">
-                <img src="{{ u.profile.avatar.url }}" class="avatar-sm" alt="">
-                <span>{{ u.username }}</span>
+        <li class="user-card">
+            <a href="{% url 'accounts:profile' u.username %}">
+                <img src="{{ u.profile.avatar.url }}" class="avatar-md" alt="">
             </a>
+
+            <div class="user-info">
+                <a href="{% url 'accounts:profile' u.username %}" class="username">
+                    {{ u.username }}
+                </a>
+                {% if u.get_full_name %}
+                    <div class="fullname">{{ u.get_full_name }}</div>
+                {% endif %}
+            </div>
+
+            <div class="user-action">
+                <button type="button"
+                        class="btn-primary btn-sm follow-btn {% if u.id in following_ids %}following{% endif %}"
+                        data-url="{% url 'accounts:follow_toggle' u.username %}">
+                    {% if u.id in following_ids %}Following{% else %}Follow{% endif %}
+                </button>
+            </div>
         </li>
     {% empty %}
-        <li class="muted">{{ empty_msg }}</li>
+        <li class="empty-state">
+            <div class="icon">👥</div>
+            <p>{{ empty_msg }}</p>
+        </li>
     {% endfor %}
 </ul>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/follow.js' %}"></script>
 {% endblock %}

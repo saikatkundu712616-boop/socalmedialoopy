@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Edit Profile{% endblock %}
+{% block title %}Edit Profile · Looply{% endblock %}
 
 {% block content %}
 <div class="auth-card wide">
     <h2>Edit Profile</h2>
+    <p class="muted">Update your public information.</p>
 
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
@@ -38,7 +39,8 @@
 
         <div class="form-actions">
             <button type="submit" class="btn-primary">Save changes</button>
-            <a href="{% url 'accounts:profile' request.user.username %}" class="btn-secondary">Cancel</a>
+            <a href="{% url 'accounts:profile' request.user.username %}"
+               class="btn-secondary">Cancel</a>
         </div>
     </form>
 </div>

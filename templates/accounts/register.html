@@ -1,33 +1,38 @@
-{% extends "base.html" %}
-{% block title %}Create account · Looply{% endblock title %}
+{% extends 'base.html' %}
+{% block title %}Create account · Looply{% endblock %}
 
 {% block content %}
-<div class='auth-card'>
+<div class="auth-card">
     <h2>Create your account</h2>
+    <p class="muted">Join Looply in a few seconds.</p>
 
     <form method="POST" novalidate>
         {% csrf_token %}
 
         <label>Username</label>
-        <input type="text" name="username" value="{{ username|default:'' }}" required maxlength="30">
+        <input type="text" name="username" value="{{ username|default:'' }}"
+               required maxlength="30">
 
-        <label>email</label>
-        <input type="email" name="email" value="{{ email|default:'' }}" required autocomplete="email">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ email|default:'' }}"
+               required autocomplete="email">
 
         <label>Password</label>
-        <input type="password" name="password" required minlength="6" autocomplete="new-password">
+        <input type="password" name="password" required minlength="6"
+               autocomplete="new-password">
 
         <label>Confirm Password</label>
-        <input type="password" name="confirm_password" value="" required minlength="6" autocomplete="new-password">
+        <input type="password" name="confirm_password" value=""
+               required minlength="6" autocomplete="new-password">
 
-        <button type="submit" class="btn-primary">Sign up</button>
+        <button type="submit" class="btn-primary btn-block" style="margin-top: 24px;">
+            Sign up
+        </button>
     </form>
 
-    <p class="muted">
+    <p class="form-footer">
         Already have an account?
-        <a href="{% url 'accounts:login' %}">log in</a>
+        <a href="{% url 'accounts:login' %}">Log in</a>
     </p>
-
 </div>
-
-{% endblock content %}
+{% endblock %}

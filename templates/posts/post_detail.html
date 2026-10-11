@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% load static post_extras %}
-{% block title %}Post by {{ post.author.username }}{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/feed.css' %}">
-{% endblock %}
+{% block title %}Post by {{ post.author.username }} · Looply{% endblock %}
 
 {% block content %}
 
@@ -20,32 +16,35 @@
     </div>
 {% else %}
 
-    {% include 'posts/post_card.html' with post=post %}
+    <div class="feed-layout">
+        {% include 'posts/post_card.html' with post=post %}
 
-    <!-- All comments below the card (extra list) -->
-    {% if post.comments_count > 0 %}
-        <div class="post-card detail" style="margin-top: -20px; border-top: none; border-radius: 0 0 12px 12px;">
-            <h3 style="padding: 12px 16px 0; font-size: 0.95rem; color: var(--text-soft); font-weight: 600;">
-                All comments
-            </h3>
-            <ul class="comments-list full">
-                {% for c in post.comments.all %}
-                    <li data-comment-id="{{ c.id }}">
-                        <img src="{{ c.author.profile.avatar.url }}" class="avatar-xs" alt="">
-                        <div>
-                            <strong>{{ c.author.username }}</strong>
-                            <span>{{ c.content }}</span>
-                            <small>{{ c.created_at|date:"M d, Y H:i" }}</small>
-                        </div>
-                        {% if c.author == user or post.author == user %}
-                            <button class="delete-comment"
-                                    data-url="{% url 'posts:delete_comment' c.id %}">×</button>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
+        {% if post.comments_count > 0 %}
+            <div class="post-card"
+                 style="margin-top: -20px; border-top: none; border-radius: 0 0 14px 14px;">
+                <h3 style="padding: 8px 22px 0; font-size: .9rem;
+                           color: var(--text-soft); font-weight: 600;">
+                    All comments
+                </h3>
+                <ul class="comments-list full">
+                    {% for c in post.comments.all %}
+                        <li data-comment-id="{{ c.id }}">
+                            <img src="{{ c.author.profile.avatar.url }}" class="avatar-xs" alt="">
+                            <div>
+                                <strong>{{ c.author.username }}</strong>
+                                <span>{{ c.content }}</span>
+                                <small>{{ c.created_at|date:"M d, Y H:i" }}</small>
+                            </div>
+                            {% if c.author == user or post.author == user %}
+                                <button class="delete-comment"
+                                        data-url="{% url 'posts:delete_comment' c.id %}">×</button>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
 
 {% endif %}
 {% endblock %}

@@ -2,10 +2,6 @@
 {% load static post_extras %}
 {% block title %}{{ profile_user.username }} · Looply{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/profile.css' %}">
-{% endblock %}
-
 {% block content %}
 
 <section class="profile-hero">
@@ -38,7 +34,7 @@
                                 type="button"
                                 class="btn-primary follow-btn {% if is_following %}following{% endif %}"
                                 data-url="{% url 'accounts:follow_toggle' profile_user.username %}">
-                            {% if is_following %}Unfollow{% else %}Follow{% endif %}
+                            {% if is_following %}Following{% else %}Follow{% endif %}
                         </button>
                     {% endif %}
                 </div>

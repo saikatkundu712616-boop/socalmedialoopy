@@ -2,17 +2,17 @@
 {% block title %}Welcome · Looply{% endblock %}
 
 {% block content %}
-<div class="auth-card wide" style="text-align:center; margin-top:80px;">
-    <h1 style="margin-bottom:6px;">{{ settings.site_name }}</h1>
+<div class="home-hero">
+    <h1>{{ settings.site_name }}</h1>
     {% if settings.tagline %}
         <p class="muted">{{ settings.tagline }}</p>
     {% endif %}
 
     {% if settings.about_text %}
-        <p style="margin-top:24px;">{{ settings.about_text }}</p>
+        <p class="about">{{ settings.about_text }}</p>
     {% endif %}
 
-    <div style="margin-top:28px; display:flex; gap:12px; justify-content:center;">
+    <div class="home-actions">
         <a href="{% url 'accounts:register' %}" class="btn-primary">Get started</a>
         <a href="{% url 'accounts:login' %}" class="btn-secondary">Log in</a>
     </div>

@@ -1,14 +1,16 @@
 {% load static post_extras %}
 <article class="post-card" data-post-id="{{ post.id }}">
 
-    <!-- ── HEADER ── -->
+    <!-- HEADER -->
     <header class="post-header">
         <a href="{% url 'accounts:profile' post.author.username %}" class="post-author">
             <img src="{{ post.author.profile.avatar.url }}"
                  class="post-avatar" alt="{{ post.author.username }}">
             <div class="post-author-meta">
                 <strong>{{ post.author.username }}</strong>
-                <span class="post-time">{{ post.created_at|date:"M d, Y" }} · {{ post.created_at|time:"H:i" }}</span>
+                <span class="post-time">
+                    {{ post.created_at|date:"M d, Y" }} · {{ post.created_at|time:"H:i" }}
+                </span>
             </div>
         </a>
 
@@ -21,12 +23,12 @@
         {% endif %}
     </header>
 
-    <!-- ── CAPTION ── -->
+    <!-- CAPTION -->
     {% if post.content %}
         <p class="post-content">{{ post.content }}</p>
     {% endif %}
 
-    <!-- ── IMAGE ── -->
+    <!-- IMAGE -->
     {% if post.image %}
         <div class="post-image-wrap">
             <a href="{% url 'posts:post_detail' post.id %}">
@@ -35,13 +37,13 @@
         </div>
     {% endif %}
 
-    <!-- ── ACTION BAR ── -->
+    <!-- ACTION BAR -->
     <div class="post-actions">
         <button type="button"
                 class="icon-btn like-btn {% if post.id|in_set:liked_post_ids %}liked{% endif %}"
                 data-url="{% url 'posts:toggle_like' post.id %}"
                 aria-label="Like">
-            <svg class="icon-heart" viewBox="0 0 24 24" width="24" height="24">
+            <svg viewBox="0 0 24 24" width="24" height="24">
                 <path d="M12 21s-7.5-4.9-9.6-9.2C.7 8.3 2.5 4.5 6 4.5c2 0 3.4 1 4.4 2.5h3.2C14.6 5.5 16 4.5 18 4.5c3.5 0 5.3 3.8 3.6 7.3C19.5 16.1 12 21 12 21z"
                       fill="none" stroke="currentColor" stroke-width="2"
                       stroke-linecap="round" stroke-linejoin="round"/>
@@ -65,13 +67,13 @@
         </button>
     </div>
 
-    <!-- ── LIKE COUNT ── -->
+    <!-- LIKE COUNT -->
     <div class="post-likes">
         <strong class="likes-count">{{ post.likes_count }}</strong>
         <span>{% if post.likes_count == 1 %}like{% else %}likes{% endif %}</span>
     </div>
 
-    <!-- ── COMMENTS ── -->
+    <!-- COMMENTS -->
     <ul class="comments-list">
         {% for c in post.comments.all|slice:":3" %}
             <li>
@@ -91,7 +93,7 @@
         </a>
     {% endif %}
 
-    <!-- ── COMMENT FORM ── -->
+    <!-- COMMENT FORM -->
     <form class="comment-form" data-url="{% url 'posts:add_comment' post.id %}">
         {% csrf_token %}
         <input type="text" name="content" maxlength="500"

@@ -1,8 +1,12 @@
 {% if messages %}
-    {% for m in messages %}
-        <div class="alert alert-{{ m.tags }}" role="alert">
-            {{ m }}
-            <button class="alert-close" onclick="this.parentElement.remove()">×</button>
-        </div>
-    {% endfor %}
+    <div class="messages">
+        {% for m in messages %}
+            <div class="alert alert-{{ m.tags }}" role="alert">
+                <span>{{ m }}</span>
+                <button class="alert-close" type="button"
+                        onclick="this.parentElement.remove()"
+                        aria-label="Dismiss">×</button>
+            </div>
+        {% endfor %}
+    </div>
 {% endif %}

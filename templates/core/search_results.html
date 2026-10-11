@@ -1,40 +1,67 @@
 {% extends 'base.html' %}
-{% block title %}Search{% endblock %}
+{% block title %}Search · Looply{% endblock %}
 
 {% block content %}
-<h2>Search</h2>
 
-<form method="GET" action="{% url 'core:search' %}" style="margin-bottom:24px;">
+<form method="GET" action="{% url 'core:search' %}" class="search-form">
     <input type="text" name="q" value="{{ q }}"
-           placeholder="Search users or posts..."
-           style="padding:10px 14px; border:1px solid #ccc; border-radius:22px;
-                  width:100%; max-width:420px; font-size:0.95rem;">
+           placeholder="Search users or posts...">
 </form>
 
 {% if q %}
 
-    <h3>Users ({{ users|length }})</h3>
-    <ul class="user-list">
-        {% for u in users %}
-            <li>
-                <a href="{% url 'accounts:profile' u.username %}" class="user-row">
-                    <img src="{{ u.profile.avatar.url }}" class="avatar-sm" alt="">
-                    <span>{{ u.username }}</span>
-                </a>
-            </li>
-        {% empty %}
-            <li class="muted">No users found.</li>
-        {% endfor %}
-    </ul>
+    <div class="search-section">
+        <h3>Users ({{ users|length }})</h3>
+        <ul class="user-list">
+            {% for u in users %}
+                <li class="user-card">
+                    <a href="{% url 'accounts:profile' u.username %}">
+                        <img src="{{ u.profile.avatar.url }}" class="avatar-md" alt="">
+                    </a>
+                    <div class="user-info">
+                        <a href="{% url 'accounts:profile' u.username %}" class="username">
+                            {{ u.username }}
+                        </a>
+                        {% if u.get_full_name %}
+                            <div class="fullname">{{ u.get_full_name }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="user-action">
+                        <button type="button"
+                                class="btn-primary btn-sm follow-btn {% if u.id in following_ids %}following{% endif %}"
+                                data-url="{% url 'accounts:follow_toggle' u.username %}">
+                            {% if u.id in following_ids %}Following{% else %}Follow{% endif %}
+                        </button>
+                    </div>
+                </li>
+            {% empty %}
+                <li class="empty-state">
+                    <div class="icon">🔎</div>
+                    <p>No users found.</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 
-    <h3 style="margin-top:32px;">Posts ({{ posts|length }})</h3>
-    {% for post in posts %}
-        {% include 'partials/post_card.html' with post=post %}
-    {% empty %}
-        <p class="muted">No posts found.</p>
-    {% endfor %}
+    <div class="search-section">
+        <h3>Posts ({{ posts|length }})</h3>
+        {% for post in posts %}
+            {% include 'posts/post_card.html' with post=post %}
+        {% empty %}
+            <p class="muted">No posts found.</p>
+        {% endfor %}
+    </div>
 
 {% else %}
-    <p class="muted">Type something to search.</p>
+    <p class="muted" style="text-align:center; max-width:640px; margin: 40px auto;">
+        Type something to search.
+    </p>
 {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/follow.js' %}"></script>
+<script src="{% static 'js/like.js' %}"></script>
+<script src="{% static 'js/comments.js' %}"></script>
 {% endblock %}
